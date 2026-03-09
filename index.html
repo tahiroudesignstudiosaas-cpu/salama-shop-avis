@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donnez votre avis - Salama Shop</title>
+    
+    <!-- Styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2E5090;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .ticket-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .ticket-info p {
+            margin: 5px 0;
+        }
+        
+        .question {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .emoji-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .emoji {
+            font-size: 60px;
+            cursor: pointer;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 150px;
+            border: 3px solid transparent;
+        }
+        
+        .emoji span {
+            display: block;
+            font-size: 18px;
+            margin-top: 10px;
+            color: #333;
+        }
+        
+        .emoji.selected {
+            transform: scale(1.05);
+            border-color: #2E5090;
+            box-shadow: 0 10px 30px rgba(46,80,144,0.3);
+        }
+        
+        .satisfait {
+            background-color: #d4edda;
+        }
+        
+        .moyen {
+            background-color: #fff3cd;
+        }
+        
+        .decu {
+            background-color: #f8d7da;
+        }
+        
+        .comment-section {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .comment-section label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #2E5090;
+        }
+        
+        button {
+            background: #2E5090;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #1a3a6f;
+        }
+        
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .emoji {
+                font-size: 40px;
+                min-width: 100px;
+                padding: 15px;
+            }
+            
+            .question {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">SALAMA SHOP</div>
+        <div class="subtitle">Boutique de vêtements & chaussures</div>
+        
+        <div id="message" class="message"></div>
+        
+        <div id="ticketInfo" class="ticket-info">
+            <!-- Rempli par JavaScript -->
+        </div>
+        
+        <div class="question">
+            Comment s'est passée votre expérience ?
+        </div>
+        
+        <div class="emoji-container">
+            <div class="emoji satisfait" onclick="selectNote(1, this)">
+                😊<span>Satisfait</span>
+            </div>
+            <div class="emoji moyen" onclick="selectNote(2, this)">
+                😐<span>Moyen</span>
+            </div>
+            <div class="emoji decu" onclick="selectNote(3, this)">
+                😞<span>Déçu</span>
+            </div>
+        </div>
+        
+        <div class="comment-section">
+            <label for="commentaire">Votre commentaire (optionnel):</label>
+            <textarea id="commentaire" placeholder="Laissez votre avis..."></textarea>
+        </div>
+        
+        <button id="submitBtn" onclick="soumettreAvis()">Envoyer mon avis</button>
+        
+        <div class="footer">
+            Merci de votre confiance !<br>
+            Tél: 61 998 909
+        </div>
+    </div>
+    
+    <script>
+        // Variables globales
+        let noteSelectionnee = null;
+        let elementSelectionne = null;
+        let envoiEnCours = false;
+        
+        // Récupérer les paramètres URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const type = urlParams.get('type');
+        const nom = urlParams.get('nom');
+        const tel = urlParams.get('tel');
+        const ticket = urlParams.get('ticket');
+        
+        // Afficher les infos du ticket
+        const ticketInfo = document.getElementById('ticketInfo');
+        if (ticket) {
+            ticketInfo.innerHTML = `
+                <p><strong>Ticket:</strong> ${ticket}</p>
+                <p><strong>Client:</strong> ${nom || 'Client'}</p>
+                <p><strong>Téléphone:</strong> ${tel || 'Non renseigné'}</p>
+            `;
+        } else if (type === 'boutique') {
+            ticketInfo.innerHTML = '<p><strong>QR Code Boutique</strong><br>Donnez votre avis sur notre boutique</p>';
+        } else {
+            ticketInfo.style.display = 'none';
+        }
+        
+        function selectNote(note, element) {
+            noteSelectionnee = note;
+            
+            // Retirer sélection précédente
+            if (elementSelectionne) {
+                elementSelectionne.classList.remove('selected');
+            }
+            
+            // Ajouter sélection
+            element.classList.add('selected');
+            elementSelectionne = element;
+        }
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        async function soumettreAvis() {
+            if (!noteSelectionnee) {
+                showMessage('Veuillez sélectionner une note', 'error');
+                return;
+            }
+            
+            if (envoiEnCours) return;
+            
+            const commentaire = document.getElementById('commentaire').value;
+            const submitBtn = document.getElementById('submitBtn');
+            
+            envoiEnCours = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Envoi en cours...';
+            
+            try {
+                // URL de ton serveur (à remplacer par ton vrai serveur plus tard)
+                const response = await fetch('https://ton-serveur.com/api/avis', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        note: noteSelectionnee,
+                        nom: nom,
+                        telephone: tel,
+                        ticket: ticket,
+                        code: code,
+                        type: type,
+                        commentaire: commentaire
+                    })
+                });
+                
+                if (response.ok) {
+                    showMessage('Merci pour votre avis !', 'success');
+                    
+                    // Réinitialiser
+                    noteSelectionnee = null;
+                    if (elementSelectionne) {
+                        elementSelectionne.classList.remove('selected');
+                        elementSelectionne = null;
+                    }
+                    document.getElementById('commentaire').value = '';
+                } else {
+                    const data = await response.json();
+                    showMessage(data.error || 'Erreur lors de l\'envoi', 'error');
+                }
+            } catch (error) {
+                // Mode démo - stockage local
+                console.log('Avis sauvegardé (démo):', {
+                    note: noteSelectionnee,
+                    nom: nom,
+                    telephone: tel,
+                    ticket: ticket,
+                    code: code,
+                    type: type,
+                    commentaire: commentaire
+                });
+                
+                showMessage('Merci pour votre avis ! (Mode démo)', 'success');
+                
+                // Réinitialiser
+                noteSelectionnee = null;
+                if (elementSelectionne) {
+                    elementSelectionne.classList.remove('selected');
+                    elementSelectionne = null;
+                }
+                document.getElementById('commentaire').value = '';
+            } finally {
+                envoiEnCours = false;
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Envoyer mon avis';
+            }
+        }
+    </script>
+</body>
+</html>
