@@ -13,7 +13,7 @@ Cette page permet aux clients de Salama Shop de donner leur avis en scannant un 
 ## Utilisation
 
 Les QR codes générés par l'application pointent vers :
-`https://TON-PSEUDO.github.io/salama-shop-avis/?code=XXXX&type=ticket&nom=Client&tel=771234567&ticket=2026/03/09-vente42`
+`https://tahiroudesignstudiosaas-cpu.github.io/salama-shop-avis/?code=XXXX&type=ticket&nom=Client&tel=771234567&ticket=2026/03/09-vente42`
 
 ## Installation
 
