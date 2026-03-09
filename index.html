@@ -15,7 +15,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2E5090 0%, #4A6FA5 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -40,6 +40,10 @@
             margin-bottom: 10px;
         }
         
+        .logo span {
+            color: #FFD700;
+        }
+        
         .subtitle {
             color: #666;
             margin-bottom: 30px;
@@ -52,16 +56,22 @@
             margin-bottom: 30px;
             text-align: left;
             font-size: 14px;
+            border-left: 4px solid #2E5090;
         }
         
         .ticket-info p {
             margin: 5px 0;
         }
         
+        .ticket-info strong {
+            color: #2E5090;
+        }
+        
         .question {
             font-size: 24px;
             margin-bottom: 30px;
             color: #333;
+            font-weight: 500;
         }
         
         .emoji-container {
@@ -81,6 +91,7 @@
             text-align: center;
             min-width: 150px;
             border: 3px solid transparent;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
         .emoji span {
@@ -88,6 +99,7 @@
             font-size: 18px;
             margin-top: 10px;
             color: #333;
+            font-weight: 500;
         }
         
         .emoji.selected {
@@ -100,12 +112,24 @@
             background-color: #d4edda;
         }
         
+        .satisfait:hover {
+            background-color: #c3e6cb;
+        }
+        
         .moyen {
             background-color: #fff3cd;
         }
         
+        .moyen:hover {
+            background-color: #ffe69c;
+        }
+        
         .decu {
             background-color: #f8d7da;
+        }
+        
+        .decu:hover {
+            background-color: #f5c6cb;
         }
         
         .comment-section {
@@ -127,13 +151,14 @@
             border-radius: 10px;
             font-size: 16px;
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
             transition: border-color 0.3s;
         }
         
         textarea:focus {
             outline: none;
             border-color: #2E5090;
+            box-shadow: 0 0 0 3px rgba(46,80,144,0.1);
         }
         
         button {
@@ -147,21 +172,42 @@
             transition: background 0.3s;
             width: 100%;
             font-weight: bold;
+            letter-spacing: 1px;
         }
         
         button:hover {
             background: #1a3a6f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46,80,144,0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
         }
         
         button:disabled {
             background: #cccccc;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         .footer {
             margin-top: 30px;
             color: #999;
             font-size: 14px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        
+        .footer a {
+            color: #2E5090;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
         }
         
         .message {
@@ -169,6 +215,7 @@
             border-radius: 10px;
             margin-bottom: 20px;
             display: none;
+            font-weight: 500;
         }
         
         .success {
@@ -181,6 +228,27 @@
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         @media (max-width: 600px) {
@@ -197,12 +265,17 @@
             .question {
                 font-size: 20px;
             }
+            
+            button {
+                font-size: 16px;
+                padding: 12px 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">SALAMA SHOP</div>
+        <div class="logo">SALAMA <span>SHOP</span></div>
         <div class="subtitle">Boutique de vêtements & chaussures</div>
         
         <div id="message" class="message"></div>
@@ -228,25 +301,37 @@
         </div>
         
         <div class="comment-section">
-            <label for="commentaire">Votre commentaire (optionnel):</label>
+            <label for="commentaire">Votre commentaire (optionnel) :</label>
             <textarea id="commentaire" placeholder="Laissez votre avis..."></textarea>
         </div>
         
-        <button id="submitBtn" onclick="soumettreAvis()">Envoyer mon avis</button>
+        <button id="submitBtn" onclick="soumettreAvis()">
+            Envoyer mon avis
+        </button>
         
         <div class="footer">
             Merci de votre confiance !<br>
-            Tél: 61 998 909
+            📞 <a href="tel:61998909">61 998 909</a><br>
+            © 2026 Salama Shop - Tous droits réservés
         </div>
     </div>
     
     <script>
-        // Variables globales
+        // ============================================
+        // CONFIGURATION - TON LIEN TALLY
+        // ============================================
+        const TALLY_URL = 'https://tally.so/r/vGB2bd';
+        
+        // ============================================
+        // VARIABLES GLOBALES
+        // ============================================
         let noteSelectionnee = null;
         let elementSelectionne = null;
         let envoiEnCours = false;
         
-        // Récupérer les paramètres URL
+        // ============================================
+        // RÉCUPÉRER LES PARAMÈTRES URL
+        // ============================================
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         const type = urlParams.get('type');
@@ -254,20 +339,32 @@
         const tel = urlParams.get('tel');
         const ticket = urlParams.get('ticket');
         
-        // Afficher les infos du ticket
+        // ============================================
+        // AFFICHER LES INFOS DU TICKET
+        // ============================================
         const ticketInfo = document.getElementById('ticketInfo');
+        
         if (ticket) {
             ticketInfo.innerHTML = `
-                <p><strong>Ticket:</strong> ${ticket}</p>
-                <p><strong>Client:</strong> ${nom || 'Client'}</p>
-                <p><strong>Téléphone:</strong> ${tel || 'Non renseigné'}</p>
+                <p><strong>🧾 TICKET:</strong> ${ticket}</p>
+                <p><strong>👤 CLIENT:</strong> ${nom || 'Client'}</p>
+                <p><strong>📞 TÉLÉPHONE:</strong> ${tel || 'Non renseigné'}</p>
             `;
+            ticketInfo.style.display = 'block';
         } else if (type === 'boutique') {
-            ticketInfo.innerHTML = '<p><strong>QR Code Boutique</strong><br>Donnez votre avis sur notre boutique</p>';
+            ticketInfo.innerHTML = '<p><strong>🏪 QR CODE BOUTIQUE</strong><br>Donnez votre avis sur notre boutique</p>';
+            ticketInfo.style.display = 'block';
         } else {
             ticketInfo.style.display = 'none';
         }
         
+        // ============================================
+        // FONCTIONS
+        // ============================================
+        
+        /**
+         * Sélectionne une note
+         */
         function selectNote(note, element) {
             noteSelectionnee = note;
             
@@ -281,89 +378,101 @@
             elementSelectionne = element;
         }
         
+        /**
+         * Affiche un message à l'utilisateur
+         */
         function showMessage(text, type) {
             const messageDiv = document.getElementById('message');
             messageDiv.textContent = text;
             messageDiv.className = `message ${type}`;
             messageDiv.style.display = 'block';
             
+            // Faire défiler jusqu'au message
+            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Masquer après 5 secondes
             setTimeout(() => {
                 messageDiv.style.display = 'none';
             }, 5000);
         }
         
-        async function soumettreAvis() {
+        /**
+         * Ajoute un indicateur de chargement au bouton
+         */
+        function setLoading(isLoading) {
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (isLoading) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="loading"></span> Redirection...';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Envoyer mon avis';
+            }
+        }
+        
+        /**
+         * Soumet l'avis en redirigeant vers Tally
+         */
+        function soumettreAvis() {
+            // Vérifier qu'une note est sélectionnée
             if (!noteSelectionnee) {
                 showMessage('Veuillez sélectionner une note', 'error');
                 return;
             }
             
+            // Empêcher les doubles envois
             if (envoiEnCours) return;
             
-            const commentaire = document.getElementById('commentaire').value;
-            const submitBtn = document.getElementById('submitBtn');
+            // Récupérer le commentaire
+            const commentaire = document.getElementById('commentaire').value.trim();
             
+            // Activer le mode chargement
             envoiEnCours = true;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Envoi en cours...';
+            setLoading(true);
             
-            try {
-                // URL de ton serveur (à remplacer par ton vrai serveur plus tard)
-                const response = await fetch('https://ton-serveur.com/api/avis', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        note: noteSelectionnee,
-                        nom: nom,
-                        telephone: tel,
-                        ticket: ticket,
-                        code: code,
-                        type: type,
-                        commentaire: commentaire
-                    })
-                });
-                
-                if (response.ok) {
-                    showMessage('Merci pour votre avis !', 'success');
-                    
-                    // Réinitialiser
-                    noteSelectionnee = null;
-                    if (elementSelectionne) {
-                        elementSelectionne.classList.remove('selected');
-                        elementSelectionne = null;
-                    }
-                    document.getElementById('commentaire').value = '';
-                } else {
-                    const data = await response.json();
-                    showMessage(data.error || 'Erreur lors de l\'envoi', 'error');
-                }
-            } catch (error) {
-                // Mode démo - stockage local
-                console.log('Avis sauvegardé (démo):', {
-                    note: noteSelectionnee,
-                    nom: nom,
-                    telephone: tel,
-                    ticket: ticket,
-                    code: code,
-                    type: type,
-                    commentaire: commentaire
-                });
-                
-                showMessage('Merci pour votre avis ! (Mode démo)', 'success');
-                
-                // Réinitialiser
-                noteSelectionnee = null;
-                if (elementSelectionne) {
-                    elementSelectionne.classList.remove('selected');
-                    elementSelectionne = null;
-                }
-                document.getElementById('commentaire').value = '';
-            } finally {
-                envoiEnCours = false;
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Envoyer mon avis';
-            }
+            // Construire l'URL Tally avec tous les paramètres
+            const params = new URLSearchParams({
+                'Note': noteSelectionnee === 1 ? '😊 Satisfait' : 
+                        (noteSelectionnee === 2 ? '😐 Moyen' : '😞 Déçu'),
+                'Commentaire': commentaire || '(Aucun commentaire)',
+                'Code QR': code || 'Non spécifié',
+                'Type QR': type || 'Non spécifié',
+                'Client': nom || 'Anonyme',
+                'Téléphone': tel || 'Non renseigné',
+                'Ticket': ticket || 'Non spécifié',
+                'Date': new Date().toLocaleString('fr-FR')
+            });
+            
+            // URL finale avec paramètres
+            const redirectUrl = `${TALLY_URL}?${params.toString()}`;
+            
+            // Afficher un message de confirmation avant redirection
+            showMessage('Redirection vers le formulaire...', 'info');
+            
+            // Petite pause pour voir le message
+            setTimeout(() => {
+                // Rediriger vers Tally
+                window.location.href = redirectUrl;
+            }, 1000);
         }
+        
+        // ============================================
+        // GESTIONNAIRES D'ÉVÉNEMENTS
+        // ============================================
+        
+        // Permettre l'envoi avec la touche Entrée (sauf si shift+entrée pour nouvelle ligne)
+        document.getElementById('commentaire').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                soumettreAvis();
+            }
+        });
+        
+        // Afficher un message de bienvenue
+        window.addEventListener('load', function() {
+            console.log('Page d\'avis Salama Shop chargée');
+        });
     </script>
 </body>
 </html>
